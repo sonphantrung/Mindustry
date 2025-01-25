@@ -155,6 +155,8 @@ public class UnitType extends UnlockableContent implements Senseable{
     circleTarget = false,
     /** if true, this unit can boost into the air if a player/processors controls it*/
     canBoost = false,
+    /** if true, this unit will always boost when using builder AI */
+    boostWhenBuilding = true,
     /** if false, logic processors cannot control this unit */
     logicControllable = true,
     /** if false, players cannot control this unit */
@@ -460,8 +462,11 @@ public class UnitType extends UnlockableContent implements Senseable{
         Unit unit = constructor.get();
         unit.team = team;
         unit.setType(this);
-        if(controller instanceof CommandAI command && defaultCommand != null){
+        if(unit.controller() instanceof CommandAI command && defaultCommand != null){
             command.command = defaultCommand;
+        }
+        for(var ability : unit.abilities){
+            ability.created(unit);
         }
         unit.ammo = ammoCapacity; //fill up on ammo upon creation
         unit.elevation = flying ? 1f : 0;
